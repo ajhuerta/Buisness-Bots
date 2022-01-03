@@ -1,0 +1,5 @@
+
+
+output = {**input}
+
+print(output)

@@ -11,12 +11,14 @@ class EtsyScrapper:
         self.page_url = "?ref=pagination&page="
         self.driver = webdriver.Chrome(self.path_name)
 
-    # This function will search for a specific item and find the corresponding 
+    # This function will search for a specific item and find the corresponding data for ONLY the first page
     def first_page_search(self, item):
         # Checks to see if input is a string
         if type(item) != str:
             raise TypeError("Item must be a string format")
 
+        total = 0
+        item_dictionary = {}
         item = item.replace(" ", "_")
 
         # Creates a new url using the item input by the user
@@ -26,9 +28,6 @@ class EtsyScrapper:
         # Collects the prices of every item as well as their name in two seperate lists
         item_prices = list(self.driver.find_elements(By.CLASS_NAME, "currency-value"))
         item_names = list(self.driver.find_elements(By.CLASS_NAME, "wt-mb-xs-0.wt-text-truncate.wt-text-caption.v2-listing-card__title"))
-
-        total = 0
-        item_dictionary = {}
 
         # Loops through every item, removes any duplicates and organizes each item and it's price in a dictionary
         for x in range(len(item_names)):
@@ -43,11 +42,11 @@ class EtsyScrapper:
             writer.writerow(["Category", "Price"])
             for key, value in item_dictionary.items():
                 writer.writerow([key,value])
-
             writer.writerow(["Average Price", total/len(item_prices)])
+
         self.driver.quit()
 
-
+    # This function will search for a specific item and find the corresponding data for as many pages specified
     def multi_page_search(self, item):
 
         if type(item) != str:
